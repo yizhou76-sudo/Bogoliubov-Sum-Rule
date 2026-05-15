@@ -1,0 +1,118 @@
+\documentclass[tikz,border=2pt]{standalone}
+\usepackage{amsmath}
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\definecolor{theorynavy}{RGB}{30,44,89}
+\definecolor{digitizedred}{RGB}{202,66,52}
+\definecolor{residualblue}{RGB}{48,104,184}
+\definecolor{softgrid}{gray}{0.90}
+
+\begin{document}
+\begin{tikzpicture}
+  \begin{groupplot}[
+    group style={group size=1 by 2, vertical sep=0.95cm},
+    width=8.45cm,
+    tick align=outside,
+    tick style={black, line width=0.4pt},
+    every axis plot/.append style={line join=round, line cap=round},
+    xtick={0,5,10,15,20,25,30},
+    xmin=0, xmax=30,
+    grid=major,
+    grid style={draw=softgrid, line width=0.25pt},
+    minor tick num=1,
+    label style={font=\small},
+    ticklabel style={font=\small},
+    legend style={
+      draw=gray!30,
+      fill=white,
+      fill opacity=0.97,
+      text opacity=1,
+      font=\footnotesize,
+      at={(0.58,0.08)},
+      anchor=south,
+      legend columns=2,
+      column sep=8pt,
+      row sep=0pt,
+      inner xsep=4pt,
+      inner ysep=3pt
+    },
+    legend cell align=left
+  ]
+
+  \nextgroupplot[
+    height=5.55cm,
+    ymin=-0.005, ymax=0.69,
+    ylabel={$\chi(0)/\chi_{N}$},
+    xlabel={},
+    xticklabel=\empty,
+    ytick distance=0.1
+  ]
+    \addplot[
+      color=theorynavy,
+      line width=1.25pt
+    ] table[
+      x=gkF_over_kBTc0,
+      y=chi0_theory_over_chiN,
+      col sep=tab
+    ] {../../backup/unused-figures/fig3_t0_theory_curve.tsv};
+    \addlegendentry{closed form}
+
+    \addplot[
+      only marks,
+      mark=*,
+      mark size=2.0pt,
+      color=digitizedred,
+      fill=digitizedred,
+      draw=black,
+      line width=0.2pt
+    ] table[
+      x=gkF_over_kBTc0,
+      y=chi0_digitized_over_chiN,
+      col sep=tab
+    ] {../../backup/unused-figures/fig3_t0_comparison.tsv};
+    \addlegendentry{digitized endpoints}
+
+  \nextgroupplot[
+    height=3.0cm,
+    ymin=-0.0021, ymax=0.0021,
+    ylabel={digitized $-$ theory},
+    xlabel={$\dfrac{g\,k_{F}}{k_{B}\,T_{c0}}$},
+    ytick={-0.002,-0.001,0,0.001,0.002}
+  ]
+    \addplot[
+      gray!65,
+      dashed,
+      line width=0.55pt
+    ] coordinates {(0,0) (30,0)};
+
+    \addplot[
+      only marks,
+      mark=*,
+      mark size=1.85pt,
+      color=residualblue,
+      fill=residualblue,
+      draw=black,
+      line width=0.2pt
+    ] table[
+      x=gkF_over_kBTc0,
+      y expr=\thisrow{chi0_digitized_over_chiN}-\thisrow{chi0_theory_over_chiN},
+      col sep=tab
+    ] {../../backup/unused-figures/fig3_t0_comparison.tsv};
+
+    \node[
+      anchor=north east,
+      fill=white,
+      fill opacity=0.95,
+      text opacity=1,
+      rounded corners=2pt,
+      draw=gray!35,
+      inner sep=2.5pt,
+      align=left,
+      font=\scriptsize
+    ] at (rel axis cs:0.965,0.88) {max $|\Delta| = 1.50\times 10^{-3}$\\rms $= 7.69\times 10^{-4}$};
+
+  \end{groupplot}
+\end{tikzpicture}
+\end{document}
